@@ -50,6 +50,9 @@ class Osoba(models.Model):
     def __str__(self):
         return f'{self.imie} {self.nazwisko}' #f string poczytać jak się go definiuje
     
+    class Meta:
+        ordering = ["nazwisko"]
+    
 class Stanowisko(models.Model):
     nazwa = models.CharField(max_length=80, blank= False, null= False)
     opis = models.TextField(blank=False, null=False)
