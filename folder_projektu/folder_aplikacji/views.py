@@ -132,7 +132,7 @@ class OsobaDetail(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = OsobaSerializer(osoba)
         return Response(serializer.data)
-    
+
     def delete(self, request, pk):
         try:
             osoba = Osoba.objects.get(pk=pk)
