@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from .models import Team, Person, Osoba, Stanowisko
 
 admin.site.register(Team)
