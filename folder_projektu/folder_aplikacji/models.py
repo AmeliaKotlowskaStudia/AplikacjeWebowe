@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.utils.timezone import now
+from datetime import date
 
 # deklaracja statycznej listy wyboru do wykorzystania w klasie modelu
 MONTHS = models.IntegerChoices('Miesiace', 'Styczeń Luty Marzec Kwiecień Maj Czerwiec Lipiec Sierpień Wrzesień Październik Listopad Grudzień')
@@ -25,7 +26,7 @@ class Team(models.Model):
 class Person(models.Model):
 
     name = models.CharField(max_length=60)
-    pseudonim = models.CharField(max_length=100)
+    pseudonim = models.CharField(max_length=80,default="")
     shirt_size = models.CharField(max_length=1, choices=SHIRT_SIZES, default=SHIRT_SIZES[0][0])
     month_added = models.IntegerField(choices=MONTHS.choices, default=MONTHS.choices[0][0])
     team = models.ForeignKey(Team, null=True, blank=True, on_delete=models.SET_NULL)
@@ -45,7 +46,7 @@ class Osoba(models.Model):
     nazwisko = models.CharField(max_length=60, blank=False, null = False)
     plec = models.IntegerField(choices=PLCIE.choices, default=PLCIE.choices[2][0])
     stanowisko = models.ForeignKey('Stanowisko', on_delete = models.CASCADE)
-    data_dodania = models.DateField(auto_now_add = True, editable= False)
+    data_dodania = models.DateField(default= date.today, blank=False, null= False)
 
     def __str__(self):
         return f'{self.imie} {self.nazwisko}' #f string poczytać jak się go definiuje
