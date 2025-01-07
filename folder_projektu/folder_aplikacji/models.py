@@ -48,9 +48,12 @@ class Osoba(models.Model):
     stanowisko = models.ForeignKey('Stanowisko', on_delete = models.CASCADE)
     data_dodania = models.DateField(default= date.today, blank=False, null= False)
 
-    def __str__(self):
-        return f'{self.imie} {self.nazwisko}' #f string poczytać jak się go definiuje
+    #def __str__(self):
+    #    return f'{self.} {self.}' #f string poczytać jak się go definiuje
     
+    def __str__(self):
+        return f"Person : {self.imie}, dodana w {self.month_added}, o rozmiarze koszuli {self.shirt_size}." 
+
     class Meta:
         ordering = ["nazwisko"]
     
