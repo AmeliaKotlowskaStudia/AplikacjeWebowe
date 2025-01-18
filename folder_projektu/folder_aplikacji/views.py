@@ -72,6 +72,7 @@ def person_update(request, pk):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])    
 def person_delete(request, pk):
+    
     try:
         person = Person.objects.get(pk=pk)
     except Person.DoesNotExist:
@@ -81,16 +82,18 @@ def person_delete(request, pk):
         person.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view(['GET', 'POST'])    
+@api_view(['GET', 'POST']) #coś nie dziła i na postmanie i na stronie!!!!!!!!!!!!!!!!!!!!!!!
+@authentication_classes([SessionAuthentication, BasicAuthentication])
+@permission_classes([IsAuthenticated])   
 def osoba_list(request):
     if request.method == "GET":
-        osoby = Osoba.objects.all()
+        osoby = Osoba.objects.filter(wlasciciel=request.user)
         serializer = OsobaSerializer(osoby, many = True)
         return Response(serializer.data)
     if request.method == 'POST':
         serializer = OsobaSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(wlasciciel=request.user)
             return Response(serializer.data, status = status.HTTP_201_CREATED)
         return Response(serializer.errors, status= status.HTTP_400_BAD_REQUEST)
     
@@ -110,7 +113,8 @@ def osoba_details(request, pk):
     
 @api_view(['GET'])
 def osoba_search(request, substring):
-    osoby = Osoba.objects.filter(imie__icontains = substring) | Osoba.objects.filter(nazwisko__icontains = substring)
+    osoby = Osoba.objects.filter(imie__icontains = substring)
+    Osoba.objects.filter(nazwisko__icontains = substring)
     serializer = OsobaSerializer(osoby, many = True)
     return Response(serializer.data)
 
@@ -200,3 +204,19 @@ def person_detail_html(request, id):
     return render(request,
                   "folder_aplikacji/person/detail.html",
                   {'person': person})
+
+class StanowiskoMemberView(APIView): #coś nie działa!!!! na postmanie
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            stanowisko = Stanowisko.objects.get(pk=pk)
+        except Stanowisko.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        osoby = Osoba.objects.filter(stanowisko = stanowisko)
+        serializer = OsobaSerializer(osoby, many = True)
+        return Response(serializer.data)
+
+

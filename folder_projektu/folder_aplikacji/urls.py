@@ -15,4 +15,5 @@ urlpatterns = [
     path("welcome", views.welcome_view),
     path("persons_html/", views.person_list_html),
     path('persons_html/<int:id>/', views.person_detail_html),
+    path('stanowisko/<int:pk>/members', views.StanowiskoMemberView.as_view()),
 ]
