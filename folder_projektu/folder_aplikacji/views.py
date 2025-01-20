@@ -4,12 +4,16 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
+from .permissions import CustomDjangoModelPermissions
 from .models import Osoba, Person, Stanowisko, Team
 from .serializers import OsobaSerializer, PersonSerializer, StanowiskoSerializer
 from rest_framework.views import APIView
 from .models import Person
 from django.http import Http404, HttpResponse
 import datetime
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import permission_required, login_required
 
 @api_view(['GET'])
 def person_list(request):
@@ -25,8 +29,8 @@ def person_list(request):
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
+@permission_required('folder_aplikacji.view_person')
 def person_detail(request, pk):
-
     """
     :param request: obiekt DRF Request
     :param pk: id obiektu Person
@@ -82,9 +86,9 @@ def person_delete(request, pk):
         person.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view(['GET', 'POST']) #coś nie dziła i na postmanie i na stronie!!!!!!!!!!!!!!!!!!!!!!!
+@api_view(['GET', 'POST']) 
 @authentication_classes([SessionAuthentication, BasicAuthentication])
-@permission_classes([IsAuthenticated])   
+@permission_classes([IsAuthenticated, CustomDjangoModelPermissions])   
 def osoba_list(request):
     if request.method == "GET":
         osoby = Osoba.objects.filter(wlasciciel=request.user)
@@ -194,6 +198,8 @@ def person_list_html(request):
                   "folder_aplikacji/person/list.html",
                   {'persons': persons})
 
+@login_required
+@permission_required('folder_aplikacji.view_person')
 def person_detail_html(request, id):
 
     try:
@@ -205,7 +211,7 @@ def person_detail_html(request, id):
                   "folder_aplikacji/person/detail.html",
                   {'person': person})
 
-class StanowiskoMemberView(APIView): #coś nie działa!!!! na postmanie
+class StanowiskoMemberView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
