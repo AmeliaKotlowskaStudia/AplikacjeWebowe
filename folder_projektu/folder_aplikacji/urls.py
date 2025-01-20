@@ -7,7 +7,7 @@ urlpatterns = [
     path('persons/<int:pk>/', views.person_detail),
     path('persons/update/<int:pk>/', views.person_update),
     path('persons/delete/<int:pk>/', views.person_delete),
-    path('osoby/', OsobaList.as_view(), name='osoba_list'),
+    path('osoby/', views.osoba_list),
     path('osoby/<int:pk>/', OsobaDetail.as_view(), name='osoba_detail'),
     path('osoby/search/<str:substring>/', views.osoba_search),
     path('stanowiska/', views.stanowisko_list),
