@@ -7,4 +7,11 @@
 <p>Rozmiar koszuli: {{ person.shirt_size }}</p>
 <p>Miesiąc dodania: {{ person.month_added }}</p>
 <p>Drużyna: {{ person.team.name }}</p>
+
+
+
+{% if perms.folder_aplikacji.delete_person %}
+<button>Delete</button>
+{% endif %}
+
 {% endblock %}
