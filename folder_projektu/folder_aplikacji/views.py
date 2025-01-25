@@ -4,17 +4,23 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
 from .permissions import CustomDjangoModelPermissions
 from .models import Osoba, Person, Stanowisko, Team
-from .serializers import OsobaSerializer, PersonSerializer, StanowiskoSerializer
+from .serializers import OsobaSerializer, PersonSerializer, StanowiskoSerializer, TeamSerializer
 from rest_framework.views import APIView
-from .models import Person
 from django.http import Http404, HttpResponse
 import datetime
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth import logout
 
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        logout(request) 
+        return Response({"message": "Wylogowano pomyślnie!"})
+    
 @api_view(['GET'])
 def person_list(request):
     """
@@ -225,4 +231,25 @@ class StanowiskoMemberView(APIView):
         serializer = OsobaSerializer(osoby, many = True)
         return Response(serializer.data)
 
+class TeamDetail(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated, CustomDjangoModelPermissions]
 
+    def get_queryset(self):
+        return Team.objects.all()
+
+    def get_object(self, pk):
+        try:
+            return Team.objects.get(pk=pk)
+        except Team.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        team = self.get_object(pk)
+        serializer = TeamSerializer(team)
+        return Response(serializer.data)
+
+    def delete(self, request, pk, format=None):
+        team = self.get_object(pk)
+        team.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

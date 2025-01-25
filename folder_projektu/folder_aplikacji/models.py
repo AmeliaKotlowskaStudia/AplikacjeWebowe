@@ -3,7 +3,6 @@ from django.utils.timezone import now
 from datetime import date
 from django.contrib.auth.models import User
 
-# deklaracja statycznej listy wyboru do wykorzystania w klasie modelu
 MONTHS = models.IntegerChoices('Miesiace', 'Styczeń Luty Marzec Kwiecień Maj Czerwiec Lipiec Sierpień Wrzesień Październik Listopad Grudzień')
 
 PLCIE = models.IntegerChoices('PLEC','Kobieta Mężczyzna Inna')
