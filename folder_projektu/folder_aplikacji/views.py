@@ -94,7 +94,7 @@ def person_delete(request, pk):
 
 @api_view(['GET', 'POST']) 
 @authentication_classes([SessionAuthentication, BasicAuthentication])
-@permission_classes([IsAuthenticated, CustomDjangoModelPermissions])   
+@permission_classes([IsAuthenticated])   
 def osoba_list(request):
     if request.method == "GET":
         osoby = Osoba.objects.filter(wlasciciel=request.user)
