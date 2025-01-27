@@ -125,8 +125,3 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'folder_aplikacji.permissions.CustomDjangoModelPermissions',
-    )
-}
